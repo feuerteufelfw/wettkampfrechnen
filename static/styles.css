@@ -1,0 +1,55 @@
+div.big_button > input {
+    width: 49%;
+    height: 10vh;
+}
+.small_bt {
+    width: 100px;
+    height: 4vh;
+}
+div.num_bt > input{
+    width: 33%;
+    height: 10vh;
+}
+
+thead{
+    position: sticky;
+}
+div.container{
+    width: 60%;
+    height: 100vh;
+    overflow-y: scroll;
+}
+tbody{
+    border: 1px solid;
+    height: 50vh;
+    overflow-y: scroll;
+}
+.data, th, td{
+    border-collapse: collapse;
+    border: 1px solid black;
+}
+th.vname{
+    width: 25%;
+}
+th.nachname{
+    width: 25%;
+}
+th.ak {
+    width: 10%
+}
+th.verein{
+    width: 20%;
+}
+th.tn{
+    width: 15%;
+}
+tn.disziplin{
+    width: 10%;
+}
+.home_bt{
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    width: 25px;
+    hight: 25px;
+}

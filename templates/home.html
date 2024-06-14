@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <link rel="stylesheet" href='/static/styles.css' />
+	<meta charset="UTF-8">
+  <title>Start</title>
+  </head>
+  <body onload ="flashMessage()">
+
+  	<form method="post" action="/">
+		<div class = big_button>
+			<input type="submit" value="zeitmessung start" name="zeitmessung_start" />
+			<input type="submit" value="Einstellungen" name="einstellungen_button"  />
+			<input type="submit" value="Neuer Teilnehmer" name = "new_user_bt"	/>
+			<input type="submit" value="Auswertung start" name="auswertung_start"  />
+			<input type="submit" value="export" name="export"  />
+			<select multiple id="disziplinselect" name = "disziplinselect" style="width: 49%; height:10vh">
+				{% for disziplin in disziplinen %}
+				<option value = {{disziplin}}>{{disziplin}}</option>
+				{% endfor %}
+			</select>
+			<input type="submit" value="tn_hinzufügen" name="tn_hinzufügen"/>
+			<input type="submit" value="Teilnehmer anzeigen" name="teilnehmer_anzeigen"/>
+		</div>
+	</form>
+  </body>
+  	<script>
+		function flashMessage() {
+			if ("{{ flash_message }}" == "True") {
+        		alert("Bitte eine Disziplin wählen");
+      		}
+		}
+	</script>

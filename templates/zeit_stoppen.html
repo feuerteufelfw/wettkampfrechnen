@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+  <title>Start</title>
+	<link rel="stylesheet" href="static/styles.css">
+</head>
+ <body >
+ 	<form method="post" action="/home">
+ 		<input class="home_bt" type ="image" src="static/home.png" value="home" alt="home" />
+	</form>
+	<div class="startup" style="display:{{display_startup}}">
+		<form method="post" action="/zeit_messung">
+			<select multiple id="disziplinselect" name = "disziplinselect" style="width: 50%; height:25vh">
+				{% for disziplin in disziplinen %}
+				<option value = {{disziplin}}>{{disziplin}}</option>
+				{% endfor %}
+			</select>
+			<input type="checkbox" id="mit_startnr" name="mit_startnr" value="true">
+			<label for="mit_startnr"> Zeiterfassung mit Startnummer </label>
+			<br>
+			<input type="checkbox" id="old_timer" name="old_timer" value="true">
+			<label for ="old_timer">laufende Zeitmessung verwenden</label>
+			<input type="submit" value="start" name="start_button"  style="width: 50%; height:50vh; margin:25%"/>
+
+
+		</form>
+	</div>		
+    <div class="calbottom" style="display:{{display_zeit_stoppen_tn}}">
+		<form method="post" action="/zeit_messung">
+		</form>
+		<form method="post" action="/zeit_messung">
+			<div class = "num_bt" >
+				<input type="submit" value="1" name="Zahlen_button"/>
+				<input type="submit" value="2" name="Zahlen_button">
+				<input type="submit" value="3" name="Zahlen_button"/>
+				<input type="submit" value="4" name="Zahlen_button">
+				<input type="submit" value="5" name="Zahlen_button"/>
+				<input type="submit" value="6" name="Zahlen_button"/>
+				<input type="submit" value="7" name="Zahlen_button"/>
+				<input type="submit" value="8" name="Zahlen_button"/>
+				<input type="submit" value="9" name="Zahlen_button"/>
+				<input type="submit" value="back" name="back_button"/>
+				<input type="submit" value="0" name="Zahlen_button"/>
+				<input type="submit" value="enter" name="enter_button" />
+			</div>
+			<br>
+			<p>Teilnehmernummer:  {{prediction_text}}</p>
+
+	</form>
+
+  </div>
+  <div class="calbottom" style="display:{{display_zeit_stoppen_ohne_tn}}">
+		<form method="post" action="/zeit_messung">
+		<input type="submit" value="home" name="home_button" >
+		</form>
+	  <form method="post" action="/zeit_messung">
+		  <input type="submit" style="height: 50vh; width: 100%;" value="stoppen" name="stopp_button"/>
+	  </form>
+	  <table border = 2 rules = all style="width: 100%; heigh:10vh">
+		  <tr>
+		  	<th> Zeit</th>
+		  </tr>
+		{% for zeit in zeiten_list %}
+		  <TR>
+			  <td>{{zeit}}</td>
+		  </TR>
+		  {% endfor %}
+	  </table>
+  </div>
+ <div class="finisher"  style="display:{{display_zeit_stoppen_tn}}">
+	 <p> Letzte Ergebnisse</p>
+	 <table border = 2 rules = all style="width:100%; height:10vh">
+		 <tr>
+   		<th> Teilnehmer Nummer</th>
+   		<th> Teilnehmer Name </th>
+   		<th> Teilnehmer Zeit </th>
+
+	 </tr>
+	 {% for teilnehmer in teilnehmer_list %}
+	 <TR>
+   		<td> {{teilnehmer.nummer}}</td>
+   		<td> {{teilnehmer.name}}</td>
+   		<td> {{teilnehmer.zeit}}</td>
+	 {% endfor %}
+	 </TR>
+	 </table>
+</body>
+</html>

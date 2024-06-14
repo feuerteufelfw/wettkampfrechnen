@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" href='/static/styles.css'>
+    <title>Einstellungen</title>
+</head>
+<body>
+    <div class="startup"></div>
+    <form method="post" action="/home">
+ 		<input class="home_bt" type ="image" src="static/home.png" value="home" alt="home" />
+	</form>
+    <form method="post" action="/einstellungen" >
+        <br/>
+	    <input type="submit" value="Urkunden" name="urkunden_bt" style="width:25%;  height:10vh"/>
+        <br/>
+        {{visibility_urkunde}}
+        <div class="urkunde" style="display:{{display_urkunde}}"  >
+          <form method="post" action="/downloade_urkunden">
+             <h1>Hochgeladene Urkunden: </h1>
+			 	{% for file in urkunden %}
+				 <a href="{{ url_for('downloade', filename=file) }}" >{{ file }}</a>
+                <br/>
+				{% endfor %}
+			</form>
+            <form action="/einstellungen" method="post" enctype="multipart/form-data">
+                <label for="urkunde"> neue Urkunde: </label>
+                <input type="file" name="urkunde" id="urkunde"/>
+                <label for="disziplin_urkunde">Disziplin: </label>
+                <input type="text" name="disziplin_urkunde" id="disziplin_urkunde"/>
+                <input class="small_bt" type="submit" name="uploade_urkunde_bt" value="uploade"/>
+            </form>
+            <br/>
+        </div>
+        <form method="post" action="/einstellungen"  enctype="multipart/form-data" >
+            <input type="submit" value="Teilnehmer" name="teilnehmer_bt" style="width:25%;  height:10vh"/>
+            <br/>
+              <div class="Teilnehmer" style="display:{{display_teilnehmer}}" action="/einstellungen">
+                  <form action = "/einstellungen" method = "post" enctype="multipart/form-data">
+                      <label for ="teilnehmer_file"> Teilnehmer Liste hinzufügen: </label>
+                      <input type ="file" name ="teilnehmer_file" id = "teilnehmer_file"/>
+                      <input class ="small_bt" type="submit" name="uploade_teilnehmer_bt" value="uploade" />
+                      <br/>
+                  </form>
+
+              </div>
+        </form>
+        <input type="submit" value="Zurücksetzen" name="reset_bt" style="width:25%;  height:10vh"/>
+        <br/>
+    </form>
+
+
+
+
+
+</body>
+</html>

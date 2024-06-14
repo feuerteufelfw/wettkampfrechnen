@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <link rel="stylesheet" href="static/styles.css">
+    <meta charset="UTF-8">
+    <title>Neuer Teilnehmer</title>
+</head>
+<body>
+    <form method="post" action="/home">
+ 		<input class="home_bt" type ="image" src="static/home.png" value="home" alt="home" />
+	</form>
+  <form method="post" action="/new_tn">
+      <label for="Disziplin_textfield">Disziplin</label>
+      <input type = "text" id = "Disziplin_textfield" name = "Disziplin_textfield" />
+      <br/>
+      <br/>
+      <label for="Vorname_textfield">Vorname: </label>
+      <input type = "text" id = "Vorname_textfield" name = "Vorname_textfield" />
+      <br/>
+      <br/>
+      <label for = "Nachname_textfield">Nachname: </label>
+      <input type = "text" id = "Nachname_textfield" name = "Nachname_textfield" />
+      <br/>
+      <br/>
+      <label for ="AK_textfield">Altersklasse </label>
+      <input type = "text" id = "AK_textfield" name = "AK_textfield"/>
+      <br/>
+      <br/>
+      <lable for = "Verein_textfield">Verein </lable>
+      <input type = "text" id = "Verein_textfield" name = "Verein_textfield"/>
+      <input type = 'submit' value = 'speichern' name = 'save_bt'>
+      <a>Teilnehmernummer {{tn_num}}</a>
+  </form>
+</body>
+</html>

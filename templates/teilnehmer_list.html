@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en" xmlns="http://www.w3.org/1999/html">
+<head>
+    <link rel="stylesheet" href="static/styles.css">
+    <meta charset="UTF-8">
+    <title>Teilnehmer Tabelle</title>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <style>
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        table, th, td {
+            border: 1px solid black;
+        }
+        th, td {
+            padding: 10px;
+            text-align: left;
+        }
+    </style>
+</head>
+<body>
+ 	<form method="post" action="/home">
+ 		<input class="home_bt" type ="image" src="static/home.png" value="home" alt="home" />
+	</form>
+<form method="post" action="/teilnehmer">
+    </form>
+    <div class ="tabel_time" style="display:{{diplay_tabel}}">
+        <h1>Bearbeitbare Tabelle</h1>
+        <table id="timeTable">
+            <thead>
+                <tr>
+                    <th>Position</th>
+                    <th>Position gesamt</th>
+                    <th>Zeit</th>
+                    <th>Start Nummer</th>
+                    <th>Name</th>
+                    <th>Vorname</th>
+                    <th>Verein</th>
+                    <th>Schule</th>
+                    <th>Ak</th>
+                    <th>Geschlecht</th>
+                    <th>Email</th>
+                    <th>Geburtsdatum</th>
+                    <th>Disziplin</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for row in teilnehmer_list %}
+                <tr>
+                    <td contenteditable="false">{{ row.pos }}</td>
+                    <td contenteditable="false">{{ row.pos_gesamt }}</td>
+                    <td contenteditable="true">{{ row.zeit }}</td>
+                    <td contenteditable="false">{{ row.tn }}</td>
+                    <td contenteditable="true">{{ row.name }}</td>
+                    <td contenteditable="true">{{ row.vorname }}</td>
+                    <td contenteditable="true">{{ row.verein }}</td>
+                    <td contenteditable="true">{{ row.schule }}</td>
+                    <td contenteditable="true">{{ row.ak }}</td>
+                    <td contenteditable="true">{{ row.geschlecht }}</td>
+                    <td contenteditable="true">{{ row.email }}</td>
+                    <td contenteditable="true">{{ row.geb }}</td>
+                    <td contenteditable="true">{{ row.disziplin }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        <button onclick="saveTable()">Speichern</button>
+
+        <script>
+            function saveTable() {
+                let tableData = [];
+                $('#timeTable tbody tr').each(function() {
+                    let row = {};
+                    $(this).find('td').each(function(index) {
+                        if (index === 0) {
+                            row['pos'] = $(this).text();
+                        } else if (index === 1){
+                            row['pos_gesamt'] = $(this).text();
+                        } else if (index === 2) {
+                            row['zeit'] = $(this).text();
+                        } else if (index === 3) {
+                            row['tn'] = $(this).text();
+                        } else if (index === 4) {
+                            row['name'] = $(this).text();
+                        } else if (index === 5) {
+                            row['vorname'] = $(this).text();
+                        } else if (index === 6) {
+                            row['verein'] = $(this).text();
+                        } else if (index === 7) {
+                            row['schule'] = $(this).text();
+                        } else if (index === 8) {
+                            row['ak'] = $(this).text();
+                        } else if (index === 9) {
+                            row['geschlecht'] = $(this).text();
+                        } else if (index === 10) {
+                            row['email'] = $(this).text();
+                        } else if (index === 11) {
+                            row['geb'] = $(this).text();
+                        } else if (index === 12) {
+                            row["disziplin"] = $(this).text();
+                        }
+                    });
+                    tableData.push(row);
+                });
+
+                $.ajax({
+                    url: '/update_teilnehmer',
+                    type: 'POST',
+                    contentType: 'application/json',
+                    data: JSON.stringify(tableData),
+                    success: function(response) {
+                        alert('Daten erfolgreich gespeichert!');
+                    }
+                });
+            }
+        </script>
+    </div>
+    </body>
+</html>
