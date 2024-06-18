@@ -96,7 +96,7 @@ class datenbank:
         sql_command = "Select * From Teilnehmer \
                         Where Start_Nr = '%s';" %(start_nr)
         self.cursor.execute(sql_command)
-        return self.cursor.fetchall()
+        return self.cursor.fetchone()
 
     def get_aks(self,disziplin_nr):
         # gibt Altersklassen, welche die Disziplin schwimmen zurück

@@ -85,8 +85,6 @@ def index():
         elif flask.request.form.get("downloade_start") == 'downloade files':
             liste = main.get_export_files()
             return flask.render_template('upload.html', files=liste)
-        elif flask.request.form.get("new_user_bt") == 'Neuer Teilnehmer':
-            return flask.render_template('new_tn.html', tn_num="")
         elif flask.request.form.get('teilnehmer_anzeigen') == \
                 'Teilnehmer anzeigen':
             db = datenbank("wettkampf.db")
@@ -206,7 +204,7 @@ def uploade_urkunde():
 def zeit_messung():
     if flask.request.method == 'POST':
         if flask.request.form.get('back_button') == 'back':
-            Web_interface.temp_class.temp_teilnehmer_nummer = \
+            temp_class.temp_teilnehmer_nummer = \
                 temp_class.temp_teilnehmer_nummer[ \
                 0:len(temp_class.temp_teilnehmer_nummer) - 1]
             return flask.render_template('zeit_stoppen.html', \
@@ -222,11 +220,10 @@ def zeit_messung():
                                                      temp_class. \
                                                      temp_teilnehmer_nummer)
             teilenhmer_nummer = temp_class.temp_teilnehmer_nummer
-            teilnehmer = main.get_teilnehmer_infos(teilenhmer_nummer)
-            teilnehmer_zeit = main.auswertung.decode_time(main.auswertung, \
-                                                          teilnehmer_zeit)
-            teilnehmer_name = teilnehmer['Vorname'].values[0] + ' '  \
-                              + teilnehmer['Nachname'].values[0]
+            teilnehmer = datenbank.get_tn_infos(datenbank("wettkampf.db"),teilenhmer_nummer)
+            teilnehmer_zeit = main.decode_time(teilnehmer_zeit)
+            teilnehmer_name = teilnehmer[1] + ' '  \
+                              + teilnehmer[2]
             teilnehmer = dict(nummer=teilenhmer_nummer, \
                               name=teilnehmer_name, \
                               zeit=teilnehmer_zeit)
@@ -350,36 +347,6 @@ def einstellungen():
                                          display_urkunde="none", \
                                          display_teilnehmer="True", \
                                          display_teilnehmer_list="none")
-
-
-@app.route('/new_tn', methods=['POST', 'GET'])
-def new_tn():
-    # Kontroller um neuen Teilnehmer hinzuzufügen
-    if flask.request.method == 'POST':
-        if flask.request.form.get('save_bt'):
-            geb_tag = flask.request.form["Geb_tag_textfield"]
-            geb_monat = flask.request.form["Geb_monat_textfield"]
-            geb_jahr = flask.request.form["Geb_jahr_textfield"]
-            geburtsdatum = datetime.datetime(int(geb_jahr), \
-                                             int(geb_monat), \
-                                             int(geb_tag))
-            ak = main.cal_ak(geburtsdatum)
-            Teilnehmer = {
-                "vorname": flask.request.form['Vorname_textfield'],
-                "name": flask.request.form["Nachname_textfield"],
-                "geburtsdatum": geburtsdatum,
-                "disziplin": flask.request.form["Disziplin_textfield"],
-                "verein": flask.request.form["Verein_textfield"],
-                "schule": flask.request.form["Schule_textfield"],
-                "geschlecht": flask.request.form["Geschlecht_textfield"],
-                "start_nr": flask.request.form["Start_Nr_textfield"],
-                "email": "",
-                "Ak": ak,
-            }
-            db = datenbank("wettkampf.db")
-            datenbank.ad_teilnehmer(db, Teilnehmer)
-            return flask.render_template('new_tn.html')
-    return flask.render_template("new_tn.html", tn_num="")
 
 class speicher:
     def __init__(self):
