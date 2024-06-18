@@ -36,10 +36,8 @@ dropzone = Dropzone(app)
 @app.route('/', methods=['GET', 'POST'])
 def index():
     #Kontroller für die start Seite
-    print("index")
     if flask.request.method == 'POST':
         if flask.request.form.get('einstellungen_button') == 'Einstellungen':
-            print('einstellungen Klick')
             return flask.render_template('einstellungen.html', \
                                          display_teilnehmer="none", \
                                          display_urkunde="none", \
@@ -49,7 +47,6 @@ def index():
             if disziplin == None:
                 flask.flash("hi")
                 disziplinen = main.get_disziplinen()
-                print(disziplinen)
                 return flask.render_template("home.html", \
                                              disziplinen=disziplinen, \
                                              flash_message="True")
@@ -69,19 +66,15 @@ def index():
         elif flask.request.form.get('zeitmessung_start') == \
                 'zeitmessung start':
             disziplinen = main.get_disziplinen()
-            print(disziplinen)
             return flask.render_template('zeit_stoppen.html', \
                                          display_zeit_stoppen_tn="none", \
                                          display_startup="True", \
                                          disziplinen=disziplinen)
-            print('config uploade')
         elif flask.request.form.get('export') == 'export':
-            print("export click")
             disziplin = flask.request.form.get('disziplinselect')
             if disziplin == None:
                 flask.flash("hi")
                 disziplinen = main.get_disziplinen()
-                print(disziplinen)
                 return flask.render_template("home.html", \
                                              disziplinen=disziplinen, \
                                              flash_message="True")
@@ -100,9 +93,7 @@ def index():
             Teilnehmer_list = datenbank.get_Teilnehmer(db)
             Teilnerhmer_dic = []
             for teilnehmer in Teilnehmer_list:
-                print(teilnehmer)
                 positionen = datenbank.get_pos(db, teilnehmer[0])
-                print(positionen)
                 pos = ""
                 pos_gesamt = ""
                 if positionen != None:
@@ -130,7 +121,6 @@ def index():
                     "email": teilnehmer[9],
                     "schule": teilnehmer[10],
                 })
-            print("hi")
             return flask.render_template("teilnehmer_list.html", \
                                          teilnehmer_list=Teilnerhmer_dic)
         else:
@@ -146,9 +136,6 @@ def home():
     disziplinen = main.get_disziplinen()
     return flask.render_template('home.html', disziplinen=disziplinen)
 
-
-#_____________________________________________________________uploade Time
-
 @app.route("/zeiten_anzeigen", methods=['POST', 'GET'])
 def zeiten_anzeigen():
     #anzeigen der Zeiten
@@ -156,7 +143,6 @@ def zeiten_anzeigen():
     if flask.request.form.get("enter") == "enter":
         disziplin = flask.request.form.get("disziplin")
         disziplin_nr = datenbank.get_disziplin_nr(db, disziplin)
-        print(disziplin_nr)
         zeiten = datenbank.get_zeiten(db, int(disziplin_nr))
         data = []
         for zeile in zeiten:
@@ -165,32 +151,26 @@ def zeiten_anzeigen():
             else:
                 tn = zeile[1]
             data.append({"zeit": zeile[0], "tn": tn, "pos": zeile[3]})
-        print(zeiten)
     disziplinen_list = main.get_disziplinen()
     return flask.render_template('zeiten_bearbeiten.html', \
                                  disziplinen_list=disziplinen_list, \
                                  data=data, \
                                  display_tabel="true")
 
-
-#speichert die neu eingegebenen TN nummern ab
 @app.route('/add_tn', methods=['POST'])
 def add_tn():
     # Kontroller um Tn zu Zeiten hinzuzufügen
     data = flask.request.get_json()
     db = datenbank("wettkampf.db")
     for zeile in data:
-        print(zeile)
         if zeile["tn"] != None:
             datenbank.ad_tn_to_zeiten(db, zeile["tn"], zeile["zeit"])
     return flask.jsonify(success=True)
-
 
 @app.route('/update_teilnehmer', methods=['POST'])
 def update_teilnehmer():
     # kontrolliert ob Teilnehmerdaten verändert wurden und
     # updatet diese in der Datenbank
-    print('update Teilnehmer')
     global data
     updated_data = flask.request.get_json()
     data = updated_data
@@ -199,7 +179,6 @@ def update_teilnehmer():
     i = 0
     for row in data:
         teilnehmer = Teilnehmer_list[i]
-        print(teilnehmer)
         if row.get("name") != teilnehmer[2] \
                 or row.get("vorname") != teilnehmer[1] \
                 or row.get("verein") != teilnehmer[5] \
@@ -207,9 +186,6 @@ def update_teilnehmer():
                 or row.get("geb") != teilnehmer[4].split(' ')[0] \
                 or row.get("email") != teilnehmer[9] \
                 or row.get("geschlecht") != teilnehmer[6]:
-            print("not matching")
-            print(Teilnehmer_list[i])
-            print(row)
             datenbank.update_tn(db, row.get("tn"), row)
         i = i + 1
     return flask.jsonify(success=True)
@@ -218,11 +194,9 @@ def update_teilnehmer():
 @app.route('/uploade_urkunde', methods=['POST', 'GET'])
 def uploade_urkunde():
     # Kontroller um Urkunden hochzuladen
-    print('uploade urkunde')
     if flask.request.method == 'POST':
         f = flask.request.files.get('file')
         if f:
-            print('get file')
             file_path = urkunden_file + '/' + f.filename
             f.save(file_path)
         return flask.render_template("einstellungen.html")
@@ -230,13 +204,11 @@ def uploade_urkunde():
 
 @app.route('/zeit_messung', methods=['POST', 'GET'])
 def zeit_messung():
-    print("zeit messung")
     if flask.request.method == 'POST':
         if flask.request.form.get('back_button') == 'back':
             Web_interface.temp_class.temp_teilnehmer_nummer = \
                 temp_class.temp_teilnehmer_nummer[ \
                 0:len(temp_class.temp_teilnehmer_nummer) - 1]
-            print('back button push')
             return flask.render_template('zeit_stoppen.html', \
                                          prediction_text=str( \
                                              temp_class.temp_teilnehmer_nummer \
@@ -244,7 +216,6 @@ def zeit_messung():
                                          display_startup="none", \
                                          display_zeit_stoppem_tn="True")
         elif flask.request.form.get('enter_button') == 'enter':
-            print('enter button push')
             teilnehmer_zeit = main.stoppuhr.new_time(main.stoppuhr, \
                                                      temp_class.start_time, \
                                                      temp_class.disziplin, \
@@ -254,9 +225,8 @@ def zeit_messung():
             teilnehmer = main.get_teilnehmer_infos(teilenhmer_nummer)
             teilnehmer_zeit = main.auswertung.decode_time(main.auswertung, \
                                                           teilnehmer_zeit)
-            print(teilnehmer['Nachname'])
-            teilnehmer_name = teilnehmer['Vorname'].values[0] + ' ' + \
-                              teilnehmer['Nachname'].values[0]
+            teilnehmer_name = teilnehmer['Vorname'].values[0] + ' '  \
+                              + teilnehmer['Nachname'].values[0]
             teilnehmer = dict(nummer=teilenhmer_nummer, \
                               name=teilnehmer_name, \
                               zeit=teilnehmer_zeit)
@@ -270,7 +240,6 @@ def zeit_messung():
                                          teilnehmer_list= \
                                              temp_class.last_teilnehmer_list)
         elif flask.request.form.get('stopp_button') == 'stoppen':
-            print("stopp button push")
             teilnehmer_zeit = main.stoppuhr.new_time(main.stoppuhr, \
                                                      temp_class.start_time, \
                                                      temp_class.disziplin)
@@ -284,11 +253,8 @@ def zeit_messung():
         elif flask.request.form.get('start_button') == 'start':
             disziplin = flask.request.form.get('disziplinselect')
             mit_tn = flask.request.form.get("mit_startnr")
-            print(mit_tn)
-            print(disziplin)
             temp_class.disziplin = disziplin
             temp_class.start_time = time.monotonic()
-            print('hi')
             if mit_tn == "true":
                 return flask.render_template('zeit_stoppen.html', \
                                              display_zeit_stoppen_tn="True", \
@@ -305,7 +271,6 @@ def zeit_messung():
             temp_class.temp_teilnehmer_nummer = \
                 temp_class.temp_teilnehmer_nummer + \
                 str(flask.request.form.get('Zahlen_button'))
-            print(flask.request.form.get('Zahlen_button'))
             return flask.render_template('zeit_stoppen.html', \
                                          prediction_text= \
                                              str(temp_class. \
@@ -331,7 +296,6 @@ def download(filename):
 @app.route('/downloade_urkunden/<path:filename>', methods=['GET'])  #sendet urkunde an client
 def downloade(filename):
     # Kontroller um Urkunden Vorlagen runterzuladen
-    print('downloade')
     return flask.send_from_directory(os.path.abspath(".") \
                             +'/files/Urkunden_Zusammenfassung/', \
                             filename, as_attachment=True)
@@ -378,8 +342,8 @@ def einstellungen():
                                          Teilnehmer_array=teilnehmer_list)
         elif flask.request.form.get("uploade_teilnehmer_bt"):
             neuer_teilnehmer_file = flask.request.files['teilnehmer_file']
-            neuer_teilnehmer_file.save(os.path.join(os.path.abspath(".") + \
-                                                    "/files/Teilnehmer.xlsx"))
+            neuer_teilnehmer_file.save(os.path.join(os.path.abspath(".") \
+                                                    + "/files/Teilnehmer.xlsx"))
 
             main.new_teilnehmer_file()
             return flask.render_template('einstellungen.html', \

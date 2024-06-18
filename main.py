@@ -3,11 +3,9 @@ import datetime
 import os
 import time
 
-import csv
 from docx2pdf import convert
 import mailmerge
 import pandas as pd
-from PyPDF2 import PdfMerger
 import pythoncom
 
 from Datenbank import datenbank
@@ -17,7 +15,7 @@ import Web_interface
 wdFormatPDF = 17
 t = 1
 start_time = ''
-#zum speichern von variablen welche von überall abgerufen werden können
+
 
 
 class speicher:
@@ -45,8 +43,8 @@ def loade_config():
     speicher.temp_pdf_pfad = os.path.abspath(".") + '/files/temp/pdf/'
     speicher.temp_docx_pfad = os.path.abspath(".") + '/files/temp/docx/'
     speicher.export_pfad = os.path.abspath(".") + '\\files\\ergebnisse.pdf'
-    speicher.urkunden_file =  os.path.abspath(".") +\
-                              '/files/Urkunden_Zusammenfassung/'
+    speicher.urkunden_file =  os.path.abspath(".") \
+                              +'/files/Urkunden_Zusammenfassung/'
     Teilnehmer_file_excl = os.path.abspath(".") + '/files/Teilnehmer.xlsx'
     speicher.teilnehmer_file_excl = Teilnehmer_file_excl
 def decode_time( zeit):
@@ -96,9 +94,11 @@ class auswertung():
 def new_teilnehmer_file():
     #Laden neuer Teilnehmer aus einen xlsx File
     db = datenbank("wettkampf.db")
-    dataframe1 = pd.read_excel('files/Teilnehmer.xlsx', index_col=False,sheet_name="2024")
+    dataframe1 = pd.read_excel('files/Teilnehmer.xlsx',\
+                               index_col=False,sheet_name="2024")
     #Benneung der unbenannten Spalten
-    dataframe1.rename(columns={"Startnummer" : "400m","Unnamed: 14": "1000m", "Unnamed: 15": "2500m"},inplace=True )
+    dataframe1.rename(columns={"Startnummer" : "400m","Unnamed: 14": "1000m",\
+                               "Unnamed: 15": "2500m"},inplace=True )
     for i, row in dataframe1.iterrows():
         #geht alle zeilen (Teilnehmer) des neuen File durch
         tn_nr = row.get('Nr.')
@@ -133,7 +133,8 @@ def new_teilnehmer_file():
                     teilnehmer["disziplin"] = "1000m"
                     teilnehmer["start_nr"] = start_nr_1000
                     datenbank.ad_teilnehmer(db,teilnehmer)
-            if start_nr_2500 is not None and start_nr_2500 == start_nr_2500 and start_nr_2500 != 'Stand 30.5.2024':
+            if start_nr_2500 is not None and start_nr_2500 == start_nr_2500 \
+                    and start_nr_2500 != 'Stand 30.5.2024':
                 if not datenbank.get_tn_infos(db, start_nr_2500):
                     teilnehmer["disziplin"] = "2500m"
                     teilnehmer["start_nr"] = start_nr_2500
@@ -179,8 +180,8 @@ def reset_temp():
 def get_disziplinen():
     #Gibt eine List mit allen Disziplinen zurück
     disziplinen_list = []
-    for f in os.listdir(os.path.abspath(".") + \
-                        '/files/Urkunden_Zusammenfassung'):
+    for f in os.listdir(os.path.abspath(".")  \
+                        + '/files/Urkunden_Zusammenfassung'):
         disziplinen_list.append(f.split('.')[0])
     return disziplinen_list
 
@@ -224,14 +225,16 @@ class export:
                     'datum': datum,
                     'teilnehmer_platz': str(teilnehmer[5])}
                 tn_dic_list.append(tn_dic)
-                urkunden_file = os.path.abspath(".") + \
-                              '/files/Urkunden_Zusammenfassung/' +disziplin+".docx"
+                urkunden_file = (os.path.abspath(".")  \
+                                + '/files/Urkunden_Zusammenfassung/'\
+                                + disziplin + ".docx")
                 with mailmerge.MailMerge(urkunden_file) \
                         as Urkunden_dokument:
-                    Urkunden_dokument.merge_templates(tn_dic_list, separator='page_break')
-                    Urkunden_dokument.write(os.path.abspath(".") +\
-                                            '/files/temp/docx/'\
-                                            +disziplin + '.docx')
+                    Urkunden_dokument.merge_templates(tn_dic_list,\
+                                                      separator='page_break')
+                    Urkunden_dokument.write(os.path.abspath(".") \
+                                            + '/files/temp/docx/'\
+                                            + disziplin + '.docx')
                     Urkunden_dokument.close()
         else:
             print('error keine daten erhalten')
@@ -242,11 +245,12 @@ class export:
 
     def docx_to_pdf(self,disziplin):
         # convertiert docx datei zu pdf
-        output_File =os.path.abspath(".") + '/files/export/Urkunden'+ \
-                      disziplin +".pdf"
-        input_File = os.path.abspath(".") + \
-                     '/files/temp/docx/' + disziplin + ".docx"
+        output_File =os.path.abspath(".") + '/files/export/Urkunden' \
+                        + disziplin +".pdf"
+        input_File = os.path.abspath(".")  \
+                        + '/files/temp/docx/' + disziplin + ".docx"
         convert(input_File,output_File)
+
 
     def get_datum(self):
         #gibt das aktuelle datum zurück
@@ -256,6 +260,7 @@ class export:
         jahr = datum.year
         datum = str(tag) + '.' + str(monat) + '.' + str(jahr)
         return datum
+
 
     def delete_temp_files(self):
         #löscht die Files in files/temp
@@ -267,6 +272,7 @@ class export:
             os.remove(os.path.abspath(".")+ '/files/temp/docx/' + file)
             counter = counter +1
 
+
     def export_xlsx(self,disziplin):
         # überträgt die Ergebnisse aus der db in xlsx Datei
         db = datenbank("wettkampf.db")
@@ -276,14 +282,15 @@ class export:
                 ergebnisse,description = db.get_ergebnisse(disziplin_nr,\
                                                            geschlecht)
                 columns = [desc[0] for desc in description ]
-                tabelle = disziplin +"_" + geschlecht
+                tabelle = disziplin + "_" + geschlecht
                 if len(ergebnisse) > 0:
                     df = pd.DataFrame(list(ergebnisse), columns=columns)
                     writer = pd.ExcelWriter( os.path.join(\
-                                os.path.abspath(".") + \
-                                '/files/export/export' + tabelle + '.xlsx'))
+                                os.path.abspath(".")  \
+                                + '/files/export/export' + tabelle + '.xlsx'))
                     df.to_excel(writer, sheet_name=tabelle,index = False)
                     writer.save()
+
 
 def reset_export():
     #löscht alle Files aus export ordner
@@ -301,8 +308,8 @@ def get_urkunden_files():
     #gibt alle Files Zurück die Unter /Files/Urkunden_Zusammenfassung/
     # gespeichert sind
     files = []
-    for file in os.listdir(os.path.abspath(".") + \
-                           '/files/Urkunden_Zusammenfassung/'):
+    for file in os.listdir(os.path.abspath(".")  \
+                          + '/files/Urkunden_Zusammenfassung/'):
         files.append(file)
     return files
 
