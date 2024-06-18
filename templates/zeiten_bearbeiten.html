@@ -23,7 +23,7 @@
  	<form method="post" action="/home">
  		<input class="home_bt" type ="image" src="static/home.png" value="home" alt="home" />
 	</form>
-    <form method="post" action="/zeiten_bearbeiten">
+    <form method="post" action="/zeiten_anzeigen">
         <input list="disziplin_list" id="disziplin" name="disziplin"/>
         <datalist id = "disziplin_list">
             {% for diszipline in disziplin_list %}
@@ -88,7 +88,7 @@
                 });
 
                 $.ajax({
-                    url: '/update',
+                    url: '/add_tn',
                     type: 'POST',
                     contentType: 'application/json',
                     data: JSON.stringify(tableData),
